@@ -1,6 +1,5 @@
 <?php
 
-
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
     echo "<b>Hello from the server.</b>";

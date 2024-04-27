@@ -1,95 +1,127 @@
-(function(){
-    function create_xml_http_request()
-    {
-        return new XMLHttpRequest();
-    }
-    function get_data(url, callback)
-    {
-        const xhr = create_xml_http_request();
-        xhr.onreadystatechange = function()
-        {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200)
-            {
-                callback(xhr.responseText);
-            }
-        };
-        xhr.open("GET", url);
-        xhr.send();
-    }
-    function send_data(url, data, callback)
-    {
-        const xhr = create_xml_http_request();
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function()
-        {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200)
-            {
-                callback(xhr.responseText);
-            }
-        };
-        xhr.send(data);
-    }
+/*
 
-    const get_elements = document.querySelectorAll("[pt-get]");
-    console.log(get_elements);
-    for (var i = 0; i < get_elements.length; ++i)
-    {
-        const e = get_elements[i];
-        const pt_event = "click";
-        e.addEventListener(pt_event, function(){
-            var pt_target = e;
-            if (e.hasAttribute("pt-target"))
-            {
-                pt_target = document.querySelector(e.getAttribute("pt-target"));
-            }
-            get_data(e.getAttribute("pt-get"), function(data){
-                pt_target.innerHTML = data;
+    pt(papatwitch) advanced framework:
+    
+    get rid of javascript and send http requests to your backend 
+    directly using html!
+
+    less to write and a simpler system
+
+    inspired by primer.js
+
+    written by Mohamed Touiti (papatwitch)
+
+*/
+!function(){
+    var doc = document,
+        htm = doc.documentElement;
+
+    const _AjaxHelper = function() {
+        const xhr = new XMLHttpRequest();
+        
+        this.get = function(url, callback) {
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    callback(xhr.responseText);
+                }
+            };
+            xhr.open("GET", url);
+            xhr.send();
+        };
+
+        this.post = function(url, data, callback) {
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function(e) {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    callback(xhr.responseText);
+                }
+            };
+            xhr.send(data);
+        };
+    };
+    var _Ajax = new _AjaxHelper();
+
+    
+    htm.onclick = function(e) {
+        e = e || window.event;
+
+        var elem      = e.target || e.srcElement,
+            href      = elem.dataset.ptGet || elem.getAttribute("pt-get"),
+            post_href = elem.dataset.ptPost || elem.getAttribute("pt-post"),
+            target    = document.querySelector(elem.dataset.ptTarget || elem.getAttribute("pt-target")) || elem,
+            replace   = elem.dataset.ptReplace || elem.getAttribute("pt-replace") || "innerHTML";
+
+        if (!elem || elem.nodeName == "FORM") {
+            return;
+        }
+
+        if (href) {
+            _Ajax.get(href, function(data){
+                target[replace] = data;
             });
-        });
-    }
-
-    const post_elements = document.querySelectorAll("[pt-post]");
-    console.log(post_elements);
-    for (var i = 0; i < post_elements.length; ++i)
-    {
-        const e = post_elements[i];
-        const pt_event = "click";
-        e.addEventListener(pt_event, function(){
-            var pt_target = e;
-            if (e.hasAttribute("pt-target"))
-            {
-                pt_target = document.querySelector(e.getAttribute("pt-target"));
-            }
-            var data_to_send = null;
-            if (e.nodeName === "FORM")
-            {
-                e.onsubmit = function(event)
-                {
-                    event.preventDefault();
-                    const fd = new FormData(event.target);
-
-                    // Turn the data object into an array of URL-encoded key/value pairs.
-                    data_to_send = {};
-                    fd.forEach(function(val, key){
-                        data_to_send[key] = val;
-                    });
-                    
-                    send_data(e.getAttribute("pt-post"), JSON.stringify(data_to_send), function(res){
-                        pt_target.innerHTML = res;
-                    });
-                };
-            }
-            else
-            {
-                if (e.hasAttribute("pt-data"))
-                {
-                    data_to_send = document.getElementsByName(e.getAttribute("pt-data"))[0].value;
-                    send_data(e.getAttribute("pt-post"), data_to_send, function(res){
-                        pt_target.innerHTML = res;
-                    });
+        } else if (post_href) {
+            const data_to_send = {};
+            var include = elem.dataset.ptInclude || elem.getAttribute("pt-include");
+            if (include) {
+                var include_input = document.querySelector(include);
+                if (!include_input) {
+                    console.error("Failed to retreive the input: " + include);
+                } else {
+                    const include_name = include_input.name;
+                    if (!include_name) {
+                        console.error("Failed to get input name (probably you didn't set the name of the input you want to process).\nHint: " + include);
+                    } else {
+                        data_to_send[include_name] = include_input.value;
+                    }
                 }
             }
+            
+            _Ajax.post(post_href, new URLSearchParams(data_to_send), function(data){
+                target[replace] = data;
+            });
+        }
+    };
+
+    htm.onsubmit = function(e) {
+        e = e || window.event;
+        var elem      = e.target || e.srcElement,
+            href      = elem.dataset.ptGet || elem.getAttribute("pt-get"),
+            post_href = elem.dataset.ptPost || elem.getAttribute("pt-post");
+
+        if (!elem || elem.nodeName != "FORM" || (!href && !post_href)) {
+            console.log("out");
+            return;
+        }
+
+        var target  = document.querySelector(elem.dataset.ptTarget || elem.getAttribute("pt-target")) || elem,
+            replace = elem.dataset.ptReplace || elem.getAttribute("pt-replace") || "innerHTML";
+
+        const fd = new FormData(e.target);
+        // Turn the data object into an array of URL-encoded key/value pairs.
+        const data_to_send = {};
+        fd.forEach(function(val, key){
+            data_to_send[key] = val;
         });
-    }
-})();
+        
+        const url_params = new URLSearchParams(data_to_send);
+        if (href) {
+            var full_url = href;
+            if (href.indexOf("?") == -1) {
+                full_url += "?" + url_params;
+            } else {
+                full_url += "&" + url_params;
+            }
+
+            _Ajax.get(full_url, function(data){
+                target[replace] = data;
+            });
+        } else if (post_href) {            
+            _Ajax.post(post_href, url_params, function(data){
+                target[replace] = data;
+            });
+        }
+
+        return false;
+    };
+}();

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forms</title>
+    <script src="../../pt.js"></script>
+</head>
+<body>
+    <form pt-post="/tests/api/forms.php" pt-replace="outerHTML">
+        <input type="text" name="username" placeholder="Enter your username">
+        <input type="password" name="password" placeholder="Enter your password">
+
+        <button>Login</button>
+    </form>
+
+    <hr>
+
+    <form pt-get="/tests/api/forms.php?type=search" pt-target="#search_div">
+        <h3>Search form</h3>
+        
+        <input type="search" name="q">
+        
+        <button>Search</button>
+
+        <div id="search_div"></div>
+    </form>
+</body>
+</html>

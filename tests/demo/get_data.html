@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get data</title>
+    <script src="../../pt.js"></script>
+</head>
+<body>
+    <p id="res">Some boring text...</p>
+    <button
+        pt-get="/tests/api/test.php"
+        pt-target="#res">
+        Click me
+    </button>
+
+    <hr>
+
+    <h4>Target by class name:</h4>
+    <ul>
+        <li class="item">Item 1</li>
+        <li class="item">Item 2</li>
+        <li class="item">Item 3</li>
+        <li class="item">Item 4</li>
+    </ul>
+
+    <!-- we can use data-* prefix
+    to be more accurate to the html standards -->
+    <button data-pt-get="/tests/api/test.php" data-pt-target=".item">Change first item only</button>
+
+    <hr>
+
+    <div id="replaceable">
+        <p>Small div to replace by a new result from the backend route.</p>
+        <button pt-get="/tests/api/data.php?type=replaceable" pt-target="#replaceable" pt-replace="outerHTML">Replace div</button>
+    </div>
+</body>
+</html>

@@ -4,27 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo</title>
+    <script src="../../pt.js"></script>
 </head>
 <body>
-    <div id="res">Hello there.</div>
-    <button pt-get="api/test.php" pt-target="#res">Reload</button>
-
-    <hr>
-
-    <form id="purchase" pt-post="api/test.php" pt-target="#form_res">
-        <h3>Sending data to server using a form submit</h3>
-        <div id="form_res"></div>
-        <input name="price" type="text" placeholder="Enter a price">
-        <input type="submit" value="Buy">
-    </form>
-
-    <hr>
+    <h1>Regular booring text</h1>
     
-    <h3>Sending data to server using pt-data (limited)</h3>
-    <input type="text" name="rate" placeholder="How many stars to send?">
-    <button pt-post="api/stars.php" pt-target="#mm" pt-data="rate">Send</button>
-    <span style="color: red;" id="mm"></span>
-    
-    <script src="../../pt.js"></script>
+    <button pt-get="/tests/api/test.php">Click me</button>
+
+    <h3>Simple right?</h3>
+    <p><a href="get_data.html">Learn more</a></p>
 </body>
 </html>

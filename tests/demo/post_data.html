@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post data</title>
+    <script src="../../pt.js"></script>
+</head>
+<body>
+    <h3>POST request button</h3>
+    <button pt-post="/tests/api/send.php?type=simple" pt-replace="outerHTML">send</button>
+
+    <hr>
+
+    <input type="text" name="my_name" id="my_name" placeholder="Enter your name">
+    <button pt-post="/tests/api/send.php?type=medium" pt-replace="outerHTML" pt-include="#my_name">Enter</button>
+
+    <hr>
+
+    <div id="comments"></div>
+    <textarea name="my_comment" id="my_comment" cols="30" rows="3" placeholder="Enter your comment here"></textarea>
+    <button pt-post="/tests/api/send.php?type=comment" pt-target="#comments" pt-include="#my_comment">Comment</button>
+</body>
+</html>
