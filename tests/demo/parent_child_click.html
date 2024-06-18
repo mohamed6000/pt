@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent child click</title>
+    
+    <script src="../../pt.js"></script>
+
+    <style>
+        .my_colored_div { color: red; font-weight: 800;  }
+    </style>
+</head>
+<body>
+    <p id="res">Some boring text...</p>
+    <button
+        pt-get="/tests/api/test.php"
+        pt-target="#res">
+        <div class="my_colored_div">Click me</div>
+    </button>
+
+    <hr/>
+
+    <button data-pt-post="/tests/api/send.php?type=simple" pt-replace="outerHTML">
+        <div class="my_colored_div">send</div>
+    </button>
+</body>
+</html>

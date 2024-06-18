@@ -14,7 +14,21 @@
 */
 !function(){
     var doc = document,
-        htm = doc.documentElement;
+        htm = doc.documentElement,
+        lct = null, // last click target
+        nearest = function(elm) {
+            while (true) {
+                if (!elm) break;
+                if (elm.hasAttribute("pt-get")) break;
+                if (elm.hasAttribute("data-pt-get")) break;
+                if (elm.hasAttribute("pt-post")) break;
+                if (elm.hasAttribute("data-pt-post")) break;
+
+                elm = elm.parentElement;
+            }
+
+            return elm;
+        };
 
     const _AjaxHelper = function() {
         const xhr = new XMLHttpRequest();
@@ -45,16 +59,17 @@
     
     htm.onclick = function(e) {
         e = e || window.event;
+        lct = e.target || e.srcElement;
 
-        var elem      = e.target || e.srcElement,
-            href      = elem.dataset.ptGet || elem.getAttribute("pt-get"),
-            post_href = elem.dataset.ptPost || elem.getAttribute("pt-post"),
-            target    = document.querySelector(elem.dataset.ptTarget || elem.getAttribute("pt-target")) || elem,
-            replace   = elem.dataset.ptReplace || elem.getAttribute("pt-replace") || "innerHTML";
-
+        var elem      = nearest(lct);
         if (!elem || elem.nodeName == "FORM") {
             return;
         }
+
+        href      = elem.dataset.ptGet || elem.getAttribute("pt-get"),
+        post_href = elem.dataset.ptPost || elem.getAttribute("pt-post"),
+        target    = document.querySelector(elem.dataset.ptTarget || elem.getAttribute("pt-target")) || elem,
+        replace   = elem.dataset.ptReplace || elem.getAttribute("pt-replace") || "innerHTML";
 
         if (href) {
             _Ajax.get(href, function(data){
@@ -90,7 +105,6 @@
             post_href = elem.dataset.ptPost || elem.getAttribute("pt-post");
 
         if (!elem || elem.nodeName != "FORM" || (!href && !post_href)) {
-            console.log("out");
             return;
         }
 
