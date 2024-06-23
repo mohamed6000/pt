@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Events</title>
+    <script src="../../pt.js"></script>
+
+    <style>
+        .hidden {opacity: 0;}
+        .fade-me-out.pt-replace {
+          opacity: 0;
+          transition: opacity 1s ease-out;
+        }
+        .fade-me-in.pt-replace {
+          opacity: 1;
+          transition: opacity 1s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div pt-get="../api/events.php?type=load" data-pt-event="load"></div>
+
+
+    <h1 id="res" class="hidden fade-me-in"></h1>
+    <button pt-get="../api/events.php?type=press" pt-event="mouseout" pt-target="#res">
+        Press
+    </button>
+
+    <hr>
+
+    <button pt-get="../api/events.php?type=press" pt-indicator="#spinner" pt-target="#spinner">Get it</button>
+    <div id="spinner" class="pt-indicator">
+        LOADING ...
+    </div>
+
+    <hr>
+
+    <input type="text" name="a" placeholder="Write comment"
+           pt-get="../api/events.php?type=comment" 
+           pt-target="#comment_view" pt-event="input"
+           pt-include>
+
+    <span>Comment view: <b class="hidden fade-me-in" id="comment_view"></b></span>
+</body>
+</html>
