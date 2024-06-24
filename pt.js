@@ -251,12 +251,9 @@
 
         const default_event_based_on_input_type = get_default_event_based_on_input_type(elem);
         const used_event = elem.dataset.ptEvent || elem.getAttribute("pt-event") || default_event_based_on_input_type;
-        if (used_event == default_event_based_on_input_type) {
-            if (is_default_clickable_element(elem)) {
+        if (is_default_clickable_element(elem)) {
+            if (used_event == default_event_based_on_input_type) {
                 process_element(elem);
-            } else {
-                // default event of element has changed let's register it
-                register_event_handler(elem, get_infos_set(elem), used_event);
             }
         }
     };
