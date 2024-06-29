@@ -43,9 +43,12 @@
             xhr.send(null);
         };
 
-        this.post = function(url, data, callback) {
+        this.post = function(url, data, callback, form_has_files_to_upload) {
             xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            if ((false == form_has_files_to_upload) || !form_has_files_to_upload) {
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                data = new URLSearchParams(data);
+            }
             xhr.onreadystatechange = function(e) {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     callback(xhr.readyState, xhr.responseText);
@@ -87,7 +90,7 @@
         return result;
     }
 
-    function send_http_request_from_info_set(infos) {
+    function send_http_request_from_info_set(infos, form_has_files_to_upload = false) {
         if (infos.indicator) {
             infos.indicator.classList.add("pt-request");
         }
@@ -104,7 +107,7 @@
                 }
             });
         } else if (infos.request_type == "post") {
-            _Ajax.post(infos.uri, new URLSearchParams(infos.data_to_send), function(request, res) {
+            _Ajax.post(infos.uri, infos.data_to_send, function(request, res) {
                 if (request == XMLHttpRequest.DONE) {
                     infos.target.classList.add("pt-replace");
                     infos.target[infos.replace_method] = res;
@@ -113,7 +116,7 @@
                         infos.indicator.classList.add("pt-request");
                     }
                 }
-            });
+            }, form_has_files_to_upload);
         }
     }
 
@@ -301,17 +304,13 @@
         if (!infos.uri) return;
 
         const fd = new FormData(e.target);
-        // Turn the data object into an array of URL-encoded key/value pairs.
-        const data_to_send = {};
-        fd.forEach(function(val, key){
-            data_to_send[key] = val;
-        });
+        const form_has_files_to_upload = e.target.querySelector("input[type=file]") != null;
         
-        infos.data_to_send = data_to_send;
+        infos.data_to_send = fd;
         if (infos.request_type == "get") {
             infos.uri = generate_uri_from_data_set(infos.uri, infos.data_to_send);
         }
-        send_http_request_from_info_set(infos);
+        send_http_request_from_info_set(infos, form_has_files_to_upload);
 
         return false;
     };
