@@ -177,7 +177,7 @@
         }
 
         if (infos.include) {
-            if (infos.include.nodeName == "INPUT" || infos.include.nodeName == "TEXTAREA") {
+            if (infos.include.nodeName == "INPUT" || infos.include.nodeName == "TEXTAREA" || infos.include.nodeName == "SELECT") {
                 if (infos.include.name && (infos.include.name != "")) {
                     infos.data_to_send = {};
                     infos.data_to_send[infos.include.name] = infos.include.value;

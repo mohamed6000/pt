@@ -9,6 +9,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             echo "<p>Database updated!</p>";
         }
     }
+} else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_GET['type'])) {
+        $type = $_GET['type'];
+        if ($type == "select") {
+            if (isset($_POST["s"])) {
+                echo $_POST["s"];
+            }
+        }
+    }
 }
 
 ?>

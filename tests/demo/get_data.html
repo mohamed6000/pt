@@ -34,5 +34,17 @@
         <p>Small div to replace by a new result from the backend route.</p>
         <button pt-get="/tests/api/data.php?type=replaceable" pt-target="#replaceable" pt-replace="outerHTML">Replace div</button>
     </div>
+
+    <hr>
+
+    <div id="selection_result"></div>
+    <select name="s" 
+            pt-post="/tests/api/data.php?type=select"
+            pt-target="#selection_result" pt-include>
+        <option value="">Choose..</option>
+        <option value="65">A</option>
+        <option value="66">B</option>
+        <option value="67">C</option>
+    </select>
 </body>
 </html>
